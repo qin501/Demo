@@ -1,0 +1,118 @@
+{
+  "data": [
+    {
+      "text": "治保人员管理",
+      "icon": "&#xe620;",
+      "subset": [
+        {
+          "text": "人员位置自动上报",
+          "icon": "&#xe621;",
+          "subset":[
+            {
+              "text":"我是测试的",
+              "icon":"$#xe620"
+            }
+          ]
+        },{
+          "text": "人员在地图上显示",
+          "icon": "&#xe621;",
+          "href": "demo/form.html"
+        },{
+          "text": "人员活动轨迹记录",
+          "icon": "&#xe621;",
+          "href": "demo/table.html"
+        }
+      ]
+    },{
+      "text": "实时呼叫/对讲",
+      "icon": "&#xe628;",
+      "href": "",
+      "subset": [
+        {
+          "text": "创建群组",
+          "icon": "&#xe621;",
+          "href": "demo/login.html"
+        },{
+          "text": "群内对讲",
+          "icon": "&#xe621;",
+          "href": "demo/login2.html"
+        },{
+          "text": "指定人员对讲",
+          "icon": "&#xe621;",
+          "href": "demo/register.html"
+        }
+      ]
+    },{
+      "text": "公告管理",
+      "icon": "&#xe628;",
+      "href": "",
+      "subset": [
+	        {
+	          "text": "下发任务公告",
+	          "icon": "&#xe621;",
+	          "href": "demo/login.html"
+	        }
+        ]
+       },{
+      "text": "工作日志",
+      "icon": "&#xe628;",
+      "href": "",
+      "subset": [
+	        {
+	          "text": "人员工作记录管理",
+	          "icon": "&#xe621;",
+	          "href": "demo/login.html"
+	        },
+	        {
+	          "text": "巡逻点签到管理",
+	          "icon": "&#xe621;",
+	          "href": "demo/login.html"
+	        }
+        ]
+       },
+       {
+      "text": "数据统计",
+      "icon": "&#xe628;",
+      "href": "",
+      "subset": [
+	        {
+	          "text": "单位人员工作统计",
+	          "icon": "&#xe621;",
+	          "href": "demo/login.html"
+	        },
+	        {
+	          "text": "个人工作统计",
+	          "icon": "&#xe621;",
+	          "href": "demo/login.html"
+	        }
+        ]
+       },
+       {
+      "text": "系统设置",
+      "icon": "&#xe628;",
+      "href": "",
+      "subset": [
+	        {
+	          "text": "区域管理",
+	          "icon": "&#xe621;",
+	          "href": "ztree.html"
+	        },
+	        {
+	          "text": "组织架构",
+	          "icon": "&#xe621;",
+	          "href": "demo/login.html"
+	        },
+	        {
+	          "text": "人员设置",
+	          "icon": "&#xe621;",
+	          "href": "demo/login.html"
+	        },
+	        {
+	          "text": "管理员管理",
+	          "icon": "&#xe621;",
+	          "href": "demo/login.html"
+	        }
+        ]
+       }
+    ]
+ }

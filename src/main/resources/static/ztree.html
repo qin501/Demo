@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/metroStyle/metroStyle.css">
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery.ztree.all.js"></script>
+    <script type="text/javascript" src="js/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="js/jquery.ztree.excheck.min.js"></script>
+    <script type="text/javascript" src="js/jquery.ztree.exedit.min.js"></script>
+    <script type="text/javascript" src="js/jquery.ztree.exhide.min.js"></script>
+    <script type="text/javascript">
+        var loadUrl="region/getTree";
+        var addUrl="region/addTree";
+        var deleteUrl="region/deleteTree";
+        var updateUrl="region/updateTree";
+        var zTreeObj;
+        var setting={
+            view: {
+                enable: true,
+                showLine: true,//显示节点之间的连线
+                showIcon: showIconForTreeRight,//显示结点图标
+                addHoverDom: addHoverDom,//用于当鼠标移动到节点时，显示用户自定义控件
+                removeHoverDom: removeHoverDom//删除节点
+            },
+            data:{
+                simpleData:{
+                    enable:true//使用简单的list<treenode>格式
+                }
+            },callback:{
+                onClick:zTreeOnClickRight,//点击节点发生的事件
+                beforeRemove:beforeRemove,//删除之前调用的函数
+                onRename:zTreeOnRename,
+                onRemove:zTreeOnRemove//删除之后的函数
+                },edit:{
+                    enable:true,
+                    showRemoveBtn:true,
+                    showRenameBtn:true,
+                    removeTitle:"删除",
+                    renameTitle:"修改"
+                }
+            }
+        //树的单击事件
+        function zTreeOnClickRight(event,treeId,treeNode){
+            var treeid = zTreeObj.getSelectedNodes()[0].id;
+            var treepid = zTreeObj.getSelectedNodes()[0].pId;
+            var treename = zTreeObj.getSelectedNodes()[0].name;
+            /*$("#grid-table").jqGrid('setGridParam',{
+                datatype:'json',
+                postData:{'workOrderTDTO1.classification':treename}
+            }).trigger("reloadGrid");*/
+        }
+        //删除前的函数
+        function beforeRemove(treeId,treeNode){
+            if(treeNode.isParent){
+                alert("请先删除子节点");
+                return false;
+            }
+            return confirm("确认删除节点--"+treeNode.name+"吗？");
+        }
+        //重命名
+        function zTreeOnRename(event, treeId, treeNode, isCancel){
+            var id=treeNode.id;
+            var name=treeNode.name;
+            $.post(updateUrl,{id:id,name:name},function (data) {
+                if(data.status==200){
+                    alert("重命名成功");
+                }else{
+                    alert(data.data);
+                }
+            });
+        }
+        //执行删除
+        function zTreeOnRemove(event, treeId, treeNode) {
+            var id=treeNode.id;
+            $.post(deleteUrl,{"id":id},function (data) {
+                if(data.status==200){
+                    alert("删除成功");
+                }else{
+                    alert(data.data);
+                }
+            });
+        }
+        var newCount=1;
+        function addHoverDom(treeId,treeNode) {
+            var sObj = $("#" + treeNode.tId + "_span");
+            var addBtn = $("#addBtn_" + treeNode.tId)
+            if (treeNode.editNameFlag || addBtn.length > 0) return;
+            var addStr = "<span class='button add' id='addBtn_" + treeNode.tId + "' title='新增' onfocus='this.blur();'></span>";
+
+            sObj.after(addStr);
+            var btn = $("#addBtn_" + treeNode.tId);
+
+            if (btn) btn.bind("click", function() {
+//		var zTree = $.fn.zTree.getZTreeObj("ztree1");
+                var name = "新增节点" + (newCount++);
+                $.post(addUrl, {
+                    'pId': treeNode.id,
+                    'name': name
+                }, function(data) {
+                    if (data.status==200) {
+                        var newID = data.data.id;
+                        alert(data.data.id);
+                        zTreeObj.addNodes(treeNode, {
+                            id: newID,
+                            pId: treeNode.id,
+                            name: name
+                        });
+                        var node = zTreeObj.getNodeByParam("id", newID, null); //根据新的id找到新添加的节点
+                        zTreeObj.selectNode(node); //让新添加的节点处于选中状态+
+                    } else {
+                        alert("失败");
+                    }
+                });
+                return false;
+            });
+        };
+        function removeHoverDom(treeId,treeNode) {
+            $("#addBtn_"+treeNode.tId).unbind().remove();
+        }
+        function showIconForTreeRight(treeId,treeNode) {
+            return !treeNode.isParent;
+        }
+        //显示tree
+        function treeShow(data){
+            zTreeObj=$.fn.zTree.init($("#ztree1"),setting,data);
+            zTreeObj.expandAll(true);
+        };
+        //当页面加载完成后执行
+        $(function () {
+            $.ajax({
+                async:true,//是否异步
+                cache:false,//是否使用缓存
+                type:'get',//请求方式post
+                dataType:'json',//数据传输格式
+                url:loadUrl,
+                success:function(data){
+                    treeShow(data);
+                },error:function () {
+                    alert("服务器异常加载失败");
+                }
+            });
+        });
+        $("#addcla").click(function(){
+            var name = "新增根节点" + (newCount++);
+            $.post(addUrl, {
+                'name': name
+            }, function(data, textStatus, xhr) {
+                /*optional stuff to do after success */
+                if (textStatus == "success") {
+                    var newID = data;
+                    zTreeObj.addNodes(null, {
+                        id: newID,
+                        name: name
+                    });
+                    var node = zTreeObj.getNodeByParam("id", newID, null); //根据新的id找到新添加的节点
+                    zTreeObj.selectNode(node); //让新添加的节点处于选中状态+
+                } else {
+                    // toastr.error("加载错误");
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="col-xs-2">
+    <ul class="ztree" id="ztree1"></ul>
+</div>
+
+</body>
+</html>
